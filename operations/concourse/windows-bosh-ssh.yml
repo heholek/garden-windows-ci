@@ -1,0 +1,62 @@
+---
+- type: replace
+  path: /releases/name=windows-utilities?
+  value:
+    name: windows-utilities
+    version: 5
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/windows-utilities-release?v=0.5.0
+    sha1: 71f5617ad2a63a558968854fc20e5fc71b033ebd
+
+- type: replace
+  path: /addons?/-
+  value:
+  - name: enable_ssh
+    release: windows-utilities
+    include:
+      stemcell:
+      - os: windows2016
+    jobs:
+    - name: enable_ssh
+      release: windows-utilities
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: golang-windows
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: git
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: cmake
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: mingw64
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: mingw32
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: bosh-cli-windows
+    release: windows-tools
+
+- type: replace
+  path: /instance_groups/name=windows-worker/jobs/-
+  value:
+    name: docker
+    release: windows-tools
