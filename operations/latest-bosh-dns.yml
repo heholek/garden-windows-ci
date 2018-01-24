@@ -6,7 +6,7 @@
     version: latest
 
 - type: replace
-  path: /addons/1/jobs/name=bosh-dns/properties/api?/-
+  path: /addons/1/jobs/name=bosh-dns/properties/api?
   value:
     server:
       tls: ((dns_api_server_tls))
@@ -14,7 +14,7 @@
       tls: ((dns_api_client_tls))
 
 - type: replace
-  path: /addons/2/jobs/name=bosh-dns-windows/properties/api?/-
+  path: /addons/2/jobs/name=bosh-dns-windows/properties/api?
   value:
     server:
       tls: ((dns_api_server_tls))
@@ -22,7 +22,7 @@
       tls: ((dns_api_client_tls))
 
 - type: replace
-  path: /addons/3/jobs/name=bosh-dns-windows/properties/api?/-
+  path: /addons/3/jobs/name=bosh-dns-windows/properties/api?
   value:
     server:
       tls: ((dns_api_server_tls))
