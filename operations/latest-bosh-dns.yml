@@ -6,7 +6,31 @@
     version: latest
 
 - type: replace
-  path: /variables/-
+  path: /addons/1/jobs/name=bosh-dns/properties/api?/-
+  value:
+    server:
+      tls: ((dns_api_server_tls))
+    client:
+      tls: ((dns_api_client_tls))
+
+- type: replace
+  path: /addons/2/jobs/name=bosh-dns-windows/properties/api?/-
+  value:
+    server:
+      tls: ((dns_api_server_tls))
+    client:
+      tls: ((dns_api_client_tls))
+
+- type: replace
+  path: /addons/3/jobs/name=bosh-dns-windows/properties/api?/-
+  value:
+    server:
+      tls: ((dns_api_server_tls))
+    client:
+      tls: ((dns_api_client_tls))
+
+- type: replace
+  path: /variables?/-
   value:
     name: dns_api_tls_ca
     type: certificate
@@ -15,7 +39,7 @@
       common_name: dns-api-tls-ca
 
 - type: replace
-  path: /variables/-
+  path: /variables?/-
   value:
     name: dns_api_server_tls
     type: certificate
@@ -26,7 +50,7 @@
       - server_auth
 
 - type: replace
-  path: /variables/-
+  path: /variables?/-
   value:
     name: dns_api_client_tls
     type: certificate
