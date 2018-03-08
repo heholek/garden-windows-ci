@@ -198,6 +198,11 @@ grdp() {
   gcloud config set project $project_name
   gcloud config set compute/zone $zone
   user=${3:-admin}
+  if [[ $2 == vm* ]]; then
+    vm=$2
+  else
+    vm=$(bosh vms | awk '/windows2016-cell/ {print $5}')
+  fi
   local auth=$(gcloud -q beta compute reset-windows-password $2 --user $user --format=json)
   local ip=$(echo $auth | jq -r .ip_address)
   local username=$(echo $auth | jq -r .username)
