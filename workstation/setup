@@ -36,4 +36,4 @@ fi
 
 python --version
 ansible --version
-sudo ansible-playbook main.yml
+sudo ansible-playbook -v main.yml --flush-cache
