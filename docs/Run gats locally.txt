@@ -1,0 +1,55 @@
+# Assumptions:
+# - go is installed
+#
+# 1. Set env variables
+
+# Set env variables WINDOWS_VERSION, INC_TEST_ROOTFS, GROOT_IMAGE_STORE, GOPATH
+
+# E.g.
+$env:WINDOWS_VERSION="1803"
+$env:WINC_TEST_ROOTFS="docker:///cloudfoundry/windows2016fs:1803"
+$env:GROOT_IMAGE_STORE = "C:\ProgramData\groot"
+$env:GOPATH="C:\go"
+
+# 2. Clone git repos
+
+# Clone garden-windows-ci, winc, winc-release, groot-windows, garden-runc-release, garden-integration-tests
+
+cd $env:GOPATH
+git clone https://github.com/cloudfoundry/garden-windows-ci.git
+git clone https://github.com/cloudfoundry/winc.git $env:GOPATH\src\code.cloudfoundry.org\winc
+git clone --recurse-submodules https://github.com/cloudfoundry/winc-release.git $env:GOPATH\src\code.cloudfoundry.org\winc-release
+git clone https://github.com/cloudfoundry/groot-windows.git $env:GOPATH\src\code.cloudfoundry.org\groot-windows
+git clone  --recurse-submodules https://github.com/cloudfoundry/garden-runc-release.git $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release
+
+# 3. Plug in windows based garden int tests into the release
+
+rm -r -force $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\code.cloudfoundry.org\garden-integration-tests
+git clone -b fork-master https://github.com/greenhouse-org/garden-integration-tests.git $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\code.cloudfoundry.org\garden-integration-tests
+
+# 4. Build winc
+
+go build -o "winc-binary\winc.exe" $env:GOPATH\src\code.cloudfoundry.org\winc\cmd\winc
+
+# 5. Build winc-network
+
+mkdir winc-network-binary -ea 0
+powershell ./garden-windows-ci/tasks/build-winc-network/run.ps1
+
+# 6. Build groot
+
+mkdir groot-binary -ea 0
+powershell ./garden-windows-ci/tasks/build-groot/run.ps1
+
+# 7. Build nstar
+
+$env:GOPATH = "$PWD\src\code.cloudfoundry.org\winc-release"
+go build -o "nstar-binary\nstar.exe" $env:GOPATH\src\nstar
+$env:GOPATH = $PWD
+
+# 8. Build garden-runc
+go build -o "garden-init-binary\garden-init.exe" $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release\src\code.cloudfoundry.org\guardian\cmd\winit
+cp -r $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release .
+
+# 9. Run local-gats
+powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1 2>err >out
