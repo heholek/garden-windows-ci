@@ -52,4 +52,15 @@ go build -o "garden-init-binary\garden-init.exe" $env:GOPATH\src\code.cloudfound
 cp -r $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release .
 
 # 9. Run local-gats
-powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1 2>err >out
+powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1
+
+# 10. Clean up
+rm -r -f garden-init-binary
+rm -r -f garden-runc-release
+rm -r -f garden-windows-ci
+rm -r -f groot-binary
+rm -r -f nstar-binary
+rm -r -f src
+rm -r -f winc-binary
+rm -r -f winc-network-binary
+rm -r -f config.yml -ea 0
