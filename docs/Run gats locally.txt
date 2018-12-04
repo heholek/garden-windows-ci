@@ -55,12 +55,12 @@ cp -r $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release .
 powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1
 
 # 10. Clean up
-rm -r -f garden-init-binary
-rm -r -f garden-runc-release
-rm -r -f garden-windows-ci
-rm -r -f groot-binary
-rm -r -f nstar-binary
-rm -r -f src
-rm -r -f winc-binary
-rm -r -f winc-network-binary
-rm -r -f config.yml -ea 0
+rm -r -force garden-init-binary
+rm -r -force garden-runc-release
+rm -r -force garden-windows-ci
+rm -r -force groot-binary
+rm -r -force nstar-binary
+rm -r -force src
+rm -r -force winc-binary
+rm -r -force winc-network-binary
+rm -r -force config.yml -ea 0
