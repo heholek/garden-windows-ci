@@ -1,6 +1,11 @@
 # Assumptions:
 # - go is installed
-#
+
+# 0. Make a test directory and cd into it
+rm -r -force gatstest -ea 0
+mkdir gatstest
+push-location gatstestdir
+
 # 1. Set env variables
 
 # Set env variables WINDOWS_VERSION, INC_TEST_ROOTFS, GROOT_IMAGE_STORE, GOPATH
@@ -9,13 +14,14 @@
 $env:WINDOWS_VERSION="1803"
 $env:WINC_TEST_ROOTFS="docker:///cloudfoundry/windows2016fs:1803"
 $env:GROOT_IMAGE_STORE = "C:\ProgramData\groot"
-$env:GOPATH="C:\go"
+
+# Set GOPATH
+$env:GOPATH=$PWD
 
 # 2. Clone git repos
 
 # Clone garden-windows-ci, winc, winc-release, groot-windows, garden-runc-release, garden-integration-tests
 
-cd $env:GOPATH
 git clone https://github.com/cloudfoundry/garden-windows-ci.git
 git clone https://github.com/cloudfoundry/winc.git $env:GOPATH\src\code.cloudfoundry.org\winc
 git clone --recurse-submodules https://github.com/cloudfoundry/winc-release.git $env:GOPATH\src\code.cloudfoundry.org\winc-release
@@ -55,12 +61,5 @@ cp -r $env:GOPATH\src\code.cloudfoundry.org\garden-runc-release .
 powershell ./garden-windows-ci/tasks/run-local-gats/run.ps1
 
 # 10. Clean up
-rm -r -force garden-init-binary
-rm -r -force garden-runc-release
-rm -r -force garden-windows-ci
-rm -r -force groot-binary
-rm -r -force nstar-binary
-rm -r -force src
-rm -r -force winc-binary
-rm -r -force winc-network-binary
-rm -r -force config.yml -ea 0
+pop-location
+rm -r -force gatstestdir
