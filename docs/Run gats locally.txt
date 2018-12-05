@@ -2,8 +2,8 @@
 # - go is installed
 
 # 0. Make a test directory and cd into it
-rm -r -force gatstest -ea 0
-mkdir gatstest
+rm -r -force gatstestdir -ea 0
+mkdir gatstestdir
 push-location gatstestdir
 
 # 1. Set env variables
