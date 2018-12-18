@@ -1,10 +1,6 @@
 ﻿$ErrorActionPreference = "Stop";
 trap { $host.SetShouldExit(1) }
 
-whoami
-
-exit 1
-
 $env:GOPATH=$PWD
 
 go get github.com/onsi/ginkgo/ginkgo
