@@ -50,6 +50,16 @@ resources:
 jobs:
 # TODO: what to trigger on
 # TODO: handle a lock already taken
+# ^ proposed strategy:
+# Have an indicator file in the garden-windows-environments repo that can be moved around
+# between environmnets and serve as a trigger to run that environemnt's bbl-update job
+# (each job will watch a specific path and when the file appears, the job is triggered).
+# That job will run in two cases:
+# 1. on_success of the bbl-up job
+# 2. on_failure of the lock-pool acquire
+# This will ensure that if bbl-up fails no other jobs will run, but if an environment is busy
+# we can still refresh the other environments.
+# The trigger for the first environment is creating this indicator file once a week.
 # TODO: other environmnets
 - name: bbl-update-hummus
   serial: true
@@ -90,4 +100,4 @@ jobs:
             release: hummus-lock-pool
     on_failure:
       task: hello-world
-      file: garden-windows-ci/tasks/hello-world.yml
+      file: garden-windows-ci/tasks/hello-world/hello-world.yml
