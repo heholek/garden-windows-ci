@@ -40,6 +40,13 @@ resources:
     private_key: {{GREENHOUSE-CI_SSH_KEY}}
     uri: git@github.com:pivotal/garden-windows-environments
 
+- name: garden-windows-ci
+  type: git
+  source:
+    branch: env-pipeline
+    private_key: {{GREENHOUSE-CI_SSH_KEY}}
+    uri: git@github.com:cloudfoundry/garden-windows-ci
+
 jobs:
 # TODO: what to trigger on
 # TODO: handle a lock already taken
@@ -52,31 +59,35 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: hummus-lock-pool
     - get: garden-windows-environments
+    - get: garden-windows-ci
   - put: hummus-lock-pool
+    timeout: 10s
     params:
       acquire: true
-  - task: bbl-up
-    file: cf-deployment-concourse-tasks/bbl-up/task.yml
-    params:
-      BBL_IAAS: gcp
-      BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
-      BBL_GCP_REGION: us-east1
-      BBL_STATE_DIR: hummus
-      BBL_LB_CERT: cert.pem
-      BBL_LB_KEY: key.pem
-      LB_DOMAIN: hummus.cf-app.com
-      BBL_ENV_NAME: hummus
-    input_mapping:
-      bbl-state: garden-windows-environments
-      bbl-config: garden-windows-environments
-    ensure:
-      do:
-      - put: garden-windows-environments
-        params:
-          repository: updated-bbl-state
-          rebase: true
-      - put: hummus-lock-pool
-        params:
-          release: hummus-lock-pool
-
-
+    on_success:
+      task: bbl-up
+      file: cf-deployment-concourse-tasks/bbl-up/task.yml
+      params:
+        BBL_IAAS: gcp
+        BBL_GCP_SERVICE_ACCOUNT_KEY: {{GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON}}
+        BBL_GCP_REGION: us-east1
+        BBL_STATE_DIR: hummus
+        BBL_LB_CERT: cert.pem
+        BBL_LB_KEY: key.pem
+        LB_DOMAIN: hummus.cf-app.com
+        BBL_ENV_NAME: hummus
+      input_mapping:
+        bbl-state: garden-windows-environments
+        bbl-config: garden-windows-environments
+      ensure:
+        do:
+        - put: garden-windows-environments
+          params:
+            repository: updated-bbl-state
+            rebase: true
+        - put: hummus-lock-pool
+          params:
+            release: hummus-lock-pool
+    on_failure:
+      task: hello-world
+      file: garden-windows-ci/tasks/hello-world.yml
