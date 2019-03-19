@@ -1,0 +1,4 @@
+---
+run:
+	path: echo
+	args: [hello world]
