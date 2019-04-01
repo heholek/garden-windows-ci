@@ -118,22 +118,22 @@ resources:
 
 # BOSH Deployment
 
-- name: sriracha-cf-deployment
-  type: bosh-deployment
-  source:
-    deployment: cf
-    client: ((SRIRACHA_BOSH_CLIENT))
-    client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
-    ca_cert: ((SRIRACHA_BOSH_CA_CERT))
-    target: ((SRIRACHA_BOSH_ENVIRONMENT))
-    jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
-    jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
-    vars_store:
-      provider: gcs
-      config:
-        bucket: cf-garden-windows-dev
-        file_name: sriracha/cf/creds.yml
-        json_key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
+# - name: sriracha-cf-deployment
+#   type: bosh-deployment
+#   source:
+#     deployment: cf
+#     client: ((SRIRACHA_BOSH_CLIENT))
+#     client_secret: ((SRIRACHA_BOSH_CLIENT_SECRET))
+#     ca_cert: ((SRIRACHA_BOSH_CA_CERT))
+#     target: ((SRIRACHA_BOSH_ENVIRONMENT))
+#     jumpbox_url: ((SRIRACHA_JUMPBOX_URL))
+#     jumpbox_ssh_key: ((SRIRACHA_JUMPBOX_SSH_KEY))
+#     vars_store:
+#       provider: gcs
+#       config:
+#         bucket: cf-garden-windows-dev
+#         file_name: sriracha/cf/creds.yml
+#         json_key: ((GARDEN_WINDOWS_DEV_SERVICE_ACCOUNT_JSON))
 
 - name: sriracha-smoke-test-deployment
   type: bosh-deployment
@@ -290,12 +290,12 @@ jobs:
     - task: get-linux-stemcell
       file: ci/tasks/get-gcp-linux-stemcell/task.yml
       output_mapping: { stemcell: gcp-linux-stemcell }
-    - task: create-windowsfs-release
-      file: ci/tasks/create-fs-release-linux/task.yml
-      input_mapping:
-        windowsfs-release: windowsfs-release-develop
-      output_mapping:
-        release-tarball: windowsfs-tarball
+    # - task: create-windowsfs-release
+    #   file: ci/tasks/create-fs-release-linux/task.yml
+    #   input_mapping:
+    #     windowsfs-release: windowsfs-release-develop
+    #   output_mapping:
+    #     release-tarball: windowsfs-tarball
   - task: create-windowsfs-opsfile
     file: ci/tasks/write-windows2016fs-opsfile/task.yml
     params:
@@ -319,28 +319,50 @@ jobs:
       BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
-  - put: sriracha-cf-deployment
+
+
+  - task: collect-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
     params:
-      manifest: cf-deployment/cf-deployment.yml
-      stemcells:
-      - gcp-linux-stemcell/*.tgz
-      - gcp-windows-stemcell/*.tgz
-      releases:
-      - windowsfs-tarball/*.tgz
-      ops_files:
-      - cf-deployment/operations/scale-to-one-az.yml
-      - ci/operations/use-2-azs-for-router.yml
-      - ((windows-cell-ops-file))
-      - ((latest-windows-stemcell-ops-file))
-      - ((windows-scale-down-ops-file))
-      - ((windows-rdp-ops-file))
-      - windowsfs-opsfile/specified-windowsfs-version.yml
-      - ((use-offline-fs-opsfile))
-      vars_files:
-      - garden-windows-environments/sriracha/cf/vars.yml
-      cleanup: true
-    get_params:
-      skip_export: true
+      BASE_OPS_FILE_DIR:
+      NEW_OPS_FILES:
+      - 
+    input_mapping: 
+      base-ops-files: cf-deployment
+      new-ops-files: ci
+
+  - task: deploy-cf
+    file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
+    params:
+      BBL_STATE_DIR: sriracha
+      SYSTEM_DOMAIN: sriracha.cf-app.com
+      OPS_FILES:
+  #     - cf-deployment/operations/scale-to-one-az.yml
+  #     - ci/operations/use-2-azs-for-router.yml
+  #     - ((windows-cell-ops-file))
+  #     - ((latest-windows-stemcell-ops-file))
+  #     - ((windows-scale-down-ops-file))
+  #     - ((windows-rdp-ops-file))
+  #     - windowsfs-opsfile/specified-windowsfs-version.yml
+  #     - ((use-offline-fs-opsfile))
+      VARS_FILES:
+  #     - bbl-state/sriracha/cf/vars.yml
+
+    input_mappings:
+      bbl-state: garden-windows-environments
+      release: windowsfs-release-develop
+      ops-files: collected-ops-files
+
+
+
+  # - put: sriracha-cf-deployment
+  #   params:
+  #     manifest: cf-deployment/cf-deployment.yml
+  #     stemcells:
+  #     - gcp-linux-stemcell/*.tgz
+  #     - gcp-windows-stemcell/*.tgz
+  #     releases:
+  #     - windowsfs-tarball/*.tgz
   - task: generate-integration-config
     file: ci/tasks/generate-integration-config/task.yml
     params:
@@ -356,15 +378,11 @@ jobs:
       NODES: 4
     on_success:
       task: delete-deployment
-      file: ci/tasks/bosh-deld/task.yml
+      file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
       params:
-        BOSH_CA_CERT: ((SRIRACHA_BOSH_CA_CERT))
-        BOSH_CLIENT: ((SRIRACHA_BOSH_CLIENT))
-        BOSH_CLIENT_SECRET: ((SRIRACHA_BOSH_CLIENT_SECRET))
-        BOSH_DEPLOYMENT: cf
-        BOSH_ENVIRONMENT: ((SRIRACHA_BOSH_ENVIRONMENT))
-        JUMPBOX_IP: ((SRIRACHA_JUMPBOX_IP))
-        JUMPBOX_SSH_KEY: ((SRIRACHA_JUMPBOX_SSH_KEY))
+        BBL_STATE_DIR: sriracha
+      input_mapping:
+        bbl-state: garden-windows-environments
   ensure:
     put: sriracha-lock-pool
     params:
