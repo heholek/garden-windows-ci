@@ -423,6 +423,12 @@ box_deploy() {
   bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml)) $recreate
 }
 
+box_deploy_recreate() {
+  local name=$1
+  bosh_target "dev-box"
+  bosh -d $name deploy <(bosh int ~/workspace/garden-windows-ci/dev-box/$name.yml -l <(lpass show --notes dev-box-secrets.yml)) --recreate
+}
+
 box_ip() {
   local name=$1
   bosh_target "dev-box"
@@ -449,6 +455,18 @@ box_rdp() {
 box_mount_smb() {
   local name=$1
   local vm_ip="$(box_ip $name)"
+  local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
+
+  sudo umount $mount_dir
+  mkdir -p $mount_dir
+  sudo mount -t cifs -o "vers=3.0,user=Administrator,password=Password123!,uid=pivotal,gid=pivotal" \
+      "//$vm_ip/workspace" \
+      $mount_dir
+}
+
+new_box_mount_smb() {
+  local name=old_envoy
+  local vm_ip="172.16.79.13"
   local mount_dir="/home/pivotal/workspace/vmfiles/vmshare/$name"
 
   sudo umount $mount_dir

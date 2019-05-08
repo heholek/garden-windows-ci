@@ -1,5 +1,3 @@
----
-name: envoy
 
 releases:
 - name: windows-tools
@@ -27,6 +25,7 @@ update:
 instance_groups:
 - name: envoy
   stemcell: windows
+  persistent_disk: 204800
   vm_type: envoy-builder
   azs: [z1]
   networks:
