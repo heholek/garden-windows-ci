@@ -1,3 +1,5 @@
+---
+name: envoy
 
 releases:
 - name: windows-tools
