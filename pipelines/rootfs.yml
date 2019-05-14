@@ -34,8 +34,8 @@ resources:
 - name: windowsservercore-1803
   type: docker-image
   source:
-    repository: microsoft/windowsservercore
-    tag: "1803"
+    repository: mcr.microsoft.com/windows/servercore
+    tag: "1803-amd64"
 
 # GitHub Release
 
@@ -68,14 +68,14 @@ resources:
     key: image-version
     region_name: us-east-1
 
+jobs:
 - name: build-and-push-1803
   serial: true
   plan:
   - aggregate:
     - get: ci
     - get: windows2016fs-develop
-    - get: windowsservercore
-      trigger: true
+    - get: windowsservercore-1803
       params:
         save: false
         rootfs: false
@@ -83,11 +83,9 @@ resources:
     - get: windowsfs-dockerfile-1803
       trigger: true
     - get: git-setup
-      trigger: true
       params:
         globs: [Git-*-64-bit.exe]
     - get: tar
-      trigger: false
     - get: image-version-1803
       params: {bump: patch}
   - task: build-and-push
