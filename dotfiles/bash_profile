@@ -248,7 +248,7 @@ fly-hydrator () {
 fly-winc () {
   fly -t garden-windows sp -p winc -c $HOME/workspace/garden-windows-ci/pipelines/winc.yml \
     -l <(_env_creds_yml pesto) \
-  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens pesto-service-account.json)
+  -l<(lpass show --notes github-deploy-keys github-deploy-keys-2 github-deploy-keys-3 aws-iam-access-keys github-access-tokens pesto-service-account.json 'azure-garden-windows')
 }
 
 fly-winc-1903 () {
