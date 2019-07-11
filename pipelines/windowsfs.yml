@@ -91,6 +91,13 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/winc-release.git
 
+- name: garden-windows-environments
+  type: git
+  source:
+    branch: master
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    uri: git@github.com:pivotal/garden-windows-environments
+
 # GitHub Release
 
 - name: windowsfs-release-github-release
@@ -387,6 +394,7 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-deployment
     - get: gcp-windows-stemcell
+    - get: garden-windows-environments
   - in_parallel:
     - task: get-cf-vars
       file: ci/tasks/get-gcs-file/task.yml
@@ -428,6 +436,23 @@ jobs:
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  # work around a bug in bosh runtime-configs
+  # see eaec7 on garden-windows-ci
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BBL_STATE_DIR: tartar
+    input_mapping:
+      bbl-state: garden-windows-environments
   - put: tartar-cf-deployment
     params:
       manifest: cf-deployment/cf-deployment.yml
@@ -492,6 +517,7 @@ jobs:
     - get: winc-release-master
       trigger: true
     - get: gcp-windows-stemcell
+    - get: garden-windows-environments
   - in_parallel:
     - task: create-windowsfs-release
       file: ci/tasks/create-fs-release-linux/task.yml
@@ -529,6 +555,23 @@ jobs:
       BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
       JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
       JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  - task: clean-up
+    file: ci/tasks/bosh-cleanup/task.yml
+    params:
+      BOSH_CA_CERT: ((TARTAR_BOSH_CA_CERT))
+      BOSH_CLIENT: ((TARTAR_BOSH_CLIENT))
+      BOSH_CLIENT_SECRET: ((TARTAR_BOSH_CLIENT_SECRET))
+      BOSH_ENVIRONMENT: ((TARTAR_BOSH_ENVIRONMENT))
+      JUMPBOX_IP: ((TARTAR_JUMPBOX_IP))
+      JUMPBOX_SSH_KEY: ((TARTAR_JUMPBOX_SSH_KEY))
+  # work around a bug in bosh runtime-configs
+  # see eaec7 on garden-windows-ci
+  - task: upload-bosh-dns-release
+    file: ci/tasks/bosh-upload-release/task.yml
+    params:
+      BBL_STATE_DIR: tartar
+    input_mapping:
+      bbl-state: garden-windows-environments
   - put: tartar-smoke-test-deployment
     params:
       manifest: windowsfs-release-develop/manifests/smoke-test.yml
