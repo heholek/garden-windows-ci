@@ -693,18 +693,39 @@ jobs:
     - get: cf-deployment
       trigger: true
     - get: azure-2019-stemcell
-  # - task: get-linux-stemcell
-  #   file: ci/tasks/get-gcp-linux-stemcell/task.yml
-  #   output_mapping:
-  #     stemcell: gcp-linux-stemcell
+  - task: collect-garden-windows-ci-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: pesto
+      NEW_OPS_FILES: |
+        operations/latest-garden-runc.yml
+        operations/latest-winc.yml
+        operations/enable-rdp-2019.yml
+        operations/windows2019-debug.yml
+        operations/decrease-rep-evacuation-timeout.yml
+        operations/enable-nginx-routing-integrity-windows2019.yml
+    input_mapping:
+      base-ops-files: garden-windows-environments
+      new-ops-files: ci
+  - task: collect-cf-deployment-ops-files
+    file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+    params:
+      BASE_OPS_FILE_DIR: pesto
+      NEW_OPS_FILES: |
+        operations/windows2019-cell.yml
+        operations/use-online-windows2019fs.yml
+        operations/use-latest-windows2019-stemcell.yml
+        operations/use-latest-stemcell.yml
+        operations/scale-to-one-az.yml
+        operations/stop-skipping-tls-validation.yml
+    input_mapping:
+      base-ops-files: collected-ops-files
+      new-ops-files: cf-deployment
   - task: delete-deployment
     file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
     params:
       BBL_STATE_DIR: pesto
-      BBL_AZURE_CLIENT_ID: {{AZURE_CLIENT_ID}}
-      BBL_AZURE_CLIENT_SECRET: {{AZURE_CLIENT_SECRET}}
-      BBL_AZURE_TENANT_ID: {{AZURE_TENANT_ID}}
-      BBL_AZURE_SUBSCRIPTION_ID: {{AZURE_SUBSCRIPTION_ID}}
+      SYSTEM_DOMATIN: pesto.cf-app.com
     input_mapping:
       bbl-state: garden-windows-environments
   - task: clean-up
@@ -725,30 +746,33 @@ jobs:
       BBL_STATE_DIR: pesto
     input_mapping:
       bbl-state: garden-windows-environments
-  - put: pesto-cf-deployment
+  - task: pesto-cf-deployment
+    file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
     params:
-      manifest: cf-deployment/cf-deployment.yml
-      source_file: source-file/source-file
-      stemcells:
-      # - azure-linux-stemcell/*.tgz
-      - azure-2019-stemcell/*.tgz
-      releases:
-      - winc-tarball/*.tgz
-      ops_files:
-      - cf-deployment/operations/scale-to-one-az.yml
-      - ci/operations/use-3-azs-for-router.yml
-      - cf-deployment/operations/windows2019-cell.yml
-      - cf-deployment/operations/use-latest-windows2019-stemcell.yml
-      - ci/operations/latest-winc.yml
-      - ci/operations/scale-down-windows2019.yml
-      - ci/operations/enable-rdp-2019.yml
-      # vars_files:
-      # - cf-vars/vars.yml
+      BBL_STATE_DIR: pesto
+      SYSTEM_DOMAIN: pesto.cf-app.com
+      OPS_FILES: |
+        pesto/windows2019-cell.yml
+        pesto/use-online-windows2019fs.yml
+        pesto/use-latest-windows2019-stemcell.yml
+        pesto/use-latest-stemcell.yml
+        pesto/scale-to-one-az.yml
+        pesto/stop-skipping-tls-validation.yml
+        pesto/latest-garden-runc.yml
+        pesto/latest-winc.yml
+        pesto/enable-rdp-2019.yml
+        pesto/decrease-rep-evacuation-timeout.yml
+        pesto/windows2019-debug.yml
+      VARS_FILES: pesto/cf/creds.yml
+    input_mapping:
+      bbl-state: garden-windows-environments
+      ops-files: collected-ops-files
+      vars-files: garden-windows-environments
+      stemcells: azure-2019-stemcell/*.tgz
+      releases: winc-tarball/*.tgz
       cleanup: true
     get_params:
       skip_export: true
-    input_mapping:
-      bbl-state: updated-bbl-state
   - task: open-asgs-for-uaa
     file: cf-deployment-concourse-tasks/open-asgs-for-bosh-instance-group/task.yml
     params:
