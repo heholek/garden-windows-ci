@@ -8,4 +8,5 @@ inputs:
 - name: web-config-wip
 
 run:
-  path: ci/tasks/test-web-config/run.ps1
+  Write-Host "hi"
+  #path: ci/tasks/test-web-config/run.ps1
