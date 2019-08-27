@@ -1,0 +1,11 @@
+---
+platform: windows
+
+#image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+
+inputs:
+- name: ci
+- name: web-config-wip
+
+run:
+  path: ci/tasks/test-web-config/run.ps1

@@ -1,0 +1,36 @@
+groups:
+- name: main
+  jobs:
+  - unit-tests
+
+resources:
+
+# Git
+
+- name: ci
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/garden-windows-ci.git
+
+- name: web-config-wip #change to master when testing is done!
+  type: git
+  source:
+    branch: UnitTests
+    uri: git@github.com:greenhouse-org/web-config-transform-buildpack.git
+    private_key: ((GREENHOUSE-CI_SSH_KEY))
+    git_config:
+    - name: user.email
+      value: "pivotal-netgarden-eng@pivotal.io"
+    - name: user.name
+      value: "Greenhouse CI"
+jobs:
+- name: unit-tests
+  plan:
+  - in_parallel:
+    - get: ci
+    - get: web-config-wip
+      trigger: true
+  - task: run-unit-tests
+    file: ci/tasks/test-web-config/task.yml
+
