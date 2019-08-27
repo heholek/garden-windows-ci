@@ -8,5 +8,7 @@ inputs:
 - name: web-config-wip
 
 run:
-  Write-Host "hi"
+  path: powershell
+  args:
+    - "Write-Host 'hi'"
   #path: ci/tasks/test-web-config/run.ps1
