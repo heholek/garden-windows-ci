@@ -1,3 +1,6 @@
+$ErrorActionPreference = "Stop";
+trap { $host.SetShouldExit(1) }
+Write-Host "Hello Malini!"
 # Param (
 #     [string] $mode,
 # 	[string] $targetFramework
@@ -224,8 +227,8 @@
 #         Exit $failedUnitTests
 #     } 
 # }
- function main {
-     Write-Host "Hello Malini!"
- }
+# function main {
+#      Write-Host "Hello Malini!"
+#  }
 
-main # Run the application.
+# main # Run the application.
