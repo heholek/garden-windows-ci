@@ -1,5 +1,6 @@
-﻿#$ErrorActionPreference = "Stop";
-#trap { $host.SetShouldExit(1) }
+﻿$ErrorActionPreference = "Stop";
+trap { $host.SetShouldExit(1) }
+Write-Host "hi"
 
 # Param (
 #     [string] $mode,
@@ -227,6 +228,7 @@
 #         Exit $failedUnitTests
 #     } 
 # }
+
 function main {
     Write-Host "Hello Malini!"
 }
