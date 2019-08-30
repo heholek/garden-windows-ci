@@ -1,5 +1,5 @@
-﻿$ErrorActionPreference = "Stop";
-trap { $host.SetShouldExit(1) }
+﻿#$ErrorActionPreference = "Stop";
+#trap { $host.SetShouldExit(1) }
 
 # Param (
 #     [string] $mode,
