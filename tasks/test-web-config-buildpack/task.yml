@@ -15,3 +15,4 @@ run:
   - "-File"
   -  ci/tasks/test-web-config-buildpack/run.ps1
   - -mode test -targetFramework 4.6.1
+  dir: web-config-wip
