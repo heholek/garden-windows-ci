@@ -2,7 +2,7 @@
 #trap { $host.SetShouldExit(1) }
 
  Param (
-     [string] $mode,
+    [string] $mode,
  	[string] $targetFramework
  )
 
