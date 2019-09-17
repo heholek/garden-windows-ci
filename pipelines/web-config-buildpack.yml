@@ -4,19 +4,17 @@ groups:
   - unit-tests
 
 resources:
-
 # Git
-
 - name: ci
   type: git
   source:
-    branch: master
+    branch: web-config-buildpack
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: web-config-wip #change to master when testing is done!
+- name: web-config-wip #change to cloud-foundry community when move is done
   type: git
   source:
-    branch: UnitTests
+    branch: master
     uri: git@github.com:greenhouse-org/web-config-transform-buildpack.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
@@ -32,5 +30,6 @@ jobs:
     - get: web-config-wip
       trigger: true
   - task: run-unit-tests
-    file: ci/tasks/test-web-config/task.yml
+    tags: [2019]
+    file: ci/tasks/test-web-config-buildpack/task.yml
 
