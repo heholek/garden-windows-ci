@@ -204,9 +204,10 @@
              -and $_.FullName -match "\\bin\\" -and $_.FullName -match "$Architecture"  }
 
          $allfiles = Get-ChildItem . -Recurse
+         Write-Host "Architecture: $Architecture" -ForegroundColor Yellow
          Write-Host "\n\ntest files: $testfiles\n" -ForegroundColor Red
          Write-Host "\n\nall files:\n $allfiles\n" -ForegroundColor Yellow
-         
+
          #Execute unit tests in all assemblies, continue even in case of error, as it provides more context
          foreach($UnitTestDll in $testfiles) {
              Write-Host "Found Test: $($UnitTestDll.FullName)" -ForegroundColor Yellow
