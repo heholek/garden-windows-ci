@@ -200,10 +200,10 @@
          $failedUnitTests = 0
          
          #Get the matching test assemblies, ensure only bin and the target architecture are selected
-         $testfiles = Get-ChildItem . -recurse  | where {$_.BaseName.EndsWith("Tests") -and $_.Extension -eq ".dll" `
+         $testfiles = Get-ChildItem .. -recurse  | where {$_.BaseName.EndsWith("Tests") -and $_.Extension -eq ".dll" `
              -and $_.FullName -match "\\bin\\" -and $_.FullName -match "$Architecture"  }
 
-         $allfiles = Get-ChildItem . -Recurse
+         $allfiles = Get-ChildItem .. -Recurse
          Write-Host "Architecture: $Architecture" -ForegroundColor Yellow
          Write-Host "\n\ntest files: $testfiles\n" -ForegroundColor Red
          Write-Host "\n\nall files:\n $allfiles\n" -ForegroundColor Yellow
