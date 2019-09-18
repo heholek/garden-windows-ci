@@ -43,7 +43,7 @@
  function Get-Mode {
      . {
          if ($mode -eq '') {
-             $mode = 'test'
+             $mode = 'build'
          }
 
      } | Out-Null
