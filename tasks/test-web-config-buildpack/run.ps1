@@ -237,7 +237,8 @@
 #    Write-Host "Hello Malini!"
 #}
 
-Write-Host "I'm here!"
-ls
+choco install netfx-4.7.1-devpack
 Exit 0
-main # Run the application.
+# ./build.ps1 Test
+
+#main # Run the application.
