@@ -8,7 +8,7 @@ inputs:
 - name: web-config-wip
 
 run:
-  path: .\build.sh
+  path: web-config-wip\build.sh
   args:
   - Test
   dir: web-config-wip
