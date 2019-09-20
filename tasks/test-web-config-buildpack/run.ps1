@@ -237,4 +237,7 @@
 #    Write-Host "Hello Malini!"
 #}
 
+Write-Host "I'm here!"
+ls
+Exit 0
 main # Run the application.

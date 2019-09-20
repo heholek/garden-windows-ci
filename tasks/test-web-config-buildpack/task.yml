@@ -1,14 +1,19 @@
 ---
-platform: linux
+platform: windows
 
-image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
+#image_resource: {type: docker-image, source: {repository: cloudfoundry/garden-windows-ci}}
 
 inputs:
 - name: ci
 - name: web-config-wip
 
 run:
-  path: web-config-wip/build.sh
+  path: powershell
   args:
-  - Test
+  - "-ExecutionPolicy"
+  - "Bypass"
+  - "-File"
+  - ci/tasks/test-web-config-buildpack/run.ps1
+  #- .\build.ps1 
+  #- Test
   dir: web-config-wip
