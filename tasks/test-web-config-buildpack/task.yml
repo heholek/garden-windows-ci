@@ -13,6 +13,6 @@ run:
   - "-ExecutionPolicy"
   - "Bypass"
   - "-File"
-  - .\build.ps1
-  - Test
+  - .\build.ps1 
+  - "Test"
   dir: web-config-wip
