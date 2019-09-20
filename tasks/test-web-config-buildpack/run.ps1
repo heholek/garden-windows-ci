@@ -237,6 +237,8 @@
 #    Write-Host "Hello Malini!"
 #}
 
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Start-Sleep -Seconds 3
 choco install netfx-4.7.1-devpack
 Exit 0
 # ./build.ps1 Test
