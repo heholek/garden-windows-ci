@@ -13,7 +13,8 @@ run:
   - "-ExecutionPolicy"
   - "Bypass"
   - "-File"
-  - ci/tasks/test-web-config-buildpack/run.ps1
-  #- .\build.ps1 
+  - ../ci/tasks/test-web-config-buildpack/run.ps1
+  - Test
+  #- .\build.ps1
   #- Test
   dir: web-config-wip
