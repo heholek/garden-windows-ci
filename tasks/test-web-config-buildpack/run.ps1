@@ -244,7 +244,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
 #$env:Path +=";%ALLUSERSPROFILE%\chocolatey\bin"
 
-choco install netfx-4.7.1-devpack -y
+#choco install netfx-4.7.1-devpack -y
+choco install netfx-4.7.2-devpack -y
 ./build.ps1 Test
 
 #main # Run the application.
