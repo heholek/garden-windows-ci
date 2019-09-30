@@ -11,6 +11,7 @@
 
 #choco install netfx-4.7.1-devpack -y
 #choco install netfx-4.7.2-devpack -y
+choco install dotnetcore-sdk --version=2.2.104 -y
 ./build.ps1 Test
 
 #main # Run the application.
