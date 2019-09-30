@@ -14,7 +14,7 @@ run:
   - "Bypass"
   - "-File"
   - ../ci/tasks/test-web-config-buildpack/run.ps1
-  - Test
+  # - Test
   #- .\build.ps1
   #- Test
   dir: web-config-wip
