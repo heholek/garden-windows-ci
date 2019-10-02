@@ -5,8 +5,8 @@ image_resource: {type: docker-image, source: {repository: mcr.microsoft.com/dotn
 
 inputs:
 - name: ci
-- name: web-config-wip
+- name: web-config-buildpack
 
 run:
   path: ../ci/tasks/test-web-config-buildpack/run.sh
-  dir: web-config-wip
+  dir: web-config-buildpack
