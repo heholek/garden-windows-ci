@@ -29,10 +29,6 @@ jobs:
     - get: ci
     - get: web-config-wip
       trigger: true
- # - task: download-dependencies
- #   tags: [2019]
- #   file: ci/tasks/test-web-config-buildpack/task.yml
   - task: run-unit-tests
-    # tags: [2019]
     file: ci/tasks/test-web-config-buildpack/task.yml
 
