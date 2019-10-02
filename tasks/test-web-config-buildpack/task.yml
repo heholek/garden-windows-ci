@@ -8,9 +8,10 @@ inputs:
 - name: web-config-wip
 
 run:
-  path: ../web-config-wip/build.sh
-  args:
-  - Test
-  - --stack
-  - Linux
+  path: ../ci/test-web-config-buildpack/run.sh
+  #path: ../web-config-wip/build.sh
+  #args:
+  #- Test
+  #- --stack
+  #- Linux
   dir: web-config-wip
