@@ -9,9 +9,4 @@ inputs:
 
 run:
   path: ../ci/tasks/test-web-config-buildpack/run.sh
-  #path: ../web-config-wip/build.sh
-  #args:
-  #- Test
-  #- --stack
-  #- Linux
   dir: web-config-wip
