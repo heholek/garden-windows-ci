@@ -1,7 +1,7 @@
 groups:
 - name: main
   jobs:
-  - unit-tests
+  - unit-and-integration-tests
 
 resources:
 # Git
@@ -11,7 +11,7 @@ resources:
     branch: web-config-buildpack
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: web-config-wip #change to cloud-foundry community when move is done
+- name: web-config-buildpack #change to cloud-foundry community when move is done
   type: git
   source:
     branch: master
@@ -23,12 +23,12 @@ resources:
     - name: user.name
       value: "Greenhouse CI"
 jobs:
-- name: unit-tests
+- name: unit-and-integration-tests
   plan:
   - in_parallel:
     - get: ci
-    - get: web-config-wip
+    - get: web-config-buildpack
       trigger: true
-  - task: run-unit-tests
+  - task: run-unit-and-integration-tests
     file: ci/tasks/test-web-config-buildpack/task.yml
 
