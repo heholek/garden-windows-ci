@@ -11,11 +11,11 @@ resources:
     branch: web-config-buildpack
     uri: https://github.com/cloudfoundry/garden-windows-ci.git
 
-- name: web-config-buildpack #change to cloud-foundry community when move is done
+- name: web-config-buildpack
   type: git
   source:
     branch: master
-    uri: git@github.com:greenhouse-org/web-config-transform-buildpack.git
+    uri: git@github.com:cloudfoundry-community/web-config-transform-buildpack.git
     private_key: ((GREENHOUSE-CI_SSH_KEY))
     git_config:
     - name: user.email
